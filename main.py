@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scapy.all import sendp, Ether, ARP, conf
 
-CHANNEL_ID = bytes(['x'])
+CHANNEL_ID = bytes([ord('x')])
 
 # Initialize the Flask app
 app = Flask(__name__)

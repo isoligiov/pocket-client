@@ -41,5 +41,3 @@ def handle_broadcast():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5030, debug=True)
-
-send_arp_with_extra_data('123')

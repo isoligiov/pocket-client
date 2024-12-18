@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scapy.all import sendp, Ether, ARP, conf
 
-CHANNEL_ID = bytes([ord('x')])
+CHANNEL_ID = bytes([149])
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -21,7 +21,7 @@ def send_arp_with_extra_data(custom_data):
     arp = ARP(op=1, hwsrc=ether.src, psrc="0.0.0.0", hwdst="00:00:00:00:00:00", pdst="0.0.0.0")
     extra_data = custom_data.encode('utf-8')
     packet = ether / arp / extra_data
-    
+
     # Send packet out on specified interface
     sendp(packet, iface=interface)
     print(f"Sent ARP packet with extra data: {custom_data}")

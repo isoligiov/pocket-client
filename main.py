@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from scapy.all import sendp, Ether, ARP, conf
+from scapy.all import sendp, Ether, ARP
 
 CHANNEL_ID = bytes([149])
+event_id = 0
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -11,16 +12,14 @@ CORS(app)
 # Network interface configuration
 interface = None  # Change to match your actual network interface
 
-def list_interfaces():
-    # This will print all available network interfaces
-    print("Available network interfaces:")
-    print(conf.ifaces)
-
 def send_arp_with_extra_data(custom_data):
+    global event_id
     ether = Ether(dst="ff:ff:ff:ff:ff:ff")  # Broadcast MAC address
     arp = ARP(op=1, hwsrc=ether.src, psrc="0.0.0.0", hwdst="00:00:00:00:00:00", pdst="0.0.0.0")
-    extra_data = CHANNEL_ID + custom_data.encode('utf-8')
+    event_id_buf = bytes([event_id])
+    extra_data = CHANNEL_ID + event_id_buf + custom_data
     packet = ether / arp / extra_data
+    event_id = (event_id + 1) % 256
 
     # Send packet out on specified interface
     sendp(packet, iface=interface)
